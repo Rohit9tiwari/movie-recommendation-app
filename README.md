@@ -17,23 +17,23 @@ A full-stack web application that recommends movies based on user preferences, b
 
 ## 📁 Project Structure
 
-movie-recommender/
-├── backend/
-│ ├── main.py # FastAPI server
-│ ├── database.py # Database operations
-│ ├── requirements.txt # Python dependencies
-│ └── README.md # Backend setup instructions
-├── frontend/
-│ ├── public/
-│ │ └── index.html # HTML template
-│ ├── src/
-│ │ ├── App.js # Main React component
-│ │ ├── App.css # Styles
-│ │ └── index.js # React entry point
-│ ├── package.json # Node.js dependencies
-│ └── README.md # Frontend setup instructions
-├── .gitignore # Git ignore file
-└── README.md # This file
+movie-recommender/  
+├── backend/  
+│ ├── main.py # FastAPI server  
+│ ├── database.py # Database operations  
+│ ├── requirements.txt # Python dependencies  
+│ └── README.md # Backend setup instructions  
+├── frontend/  
+│ ├── public/  
+│ │ └── index.html # HTML template  
+│ ├── src/  
+│ │ ├── App.js # Main React component  
+│ │ ├── App.css # Styles  
+│ │ └── index.js # React entry point  
+│ ├── package.json # Node.js dependencies  
+│ └── README.md # Frontend setup instructions  
+├── .gitignore # Git ignore file  
+└── README.md # This file  
 
 
 
