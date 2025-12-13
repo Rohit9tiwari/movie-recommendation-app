@@ -134,8 +134,6 @@ Frontend not connecting: Ensure backend is running
 Database issues: Delete movie_recommendations.db and restart
 
 
-License
-MIT License
 
 👥 Authors
 [Rohit Tiwari] - [https://github.com/Rohit9tiwari]
