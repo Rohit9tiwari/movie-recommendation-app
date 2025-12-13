@@ -2,8 +2,6 @@
 
 A full-stack web application that recommends movies based on user preferences, built with React frontend and FastAPI backend.
 
-## 🚀 Live Demo
-[Add your deployment link here once deployed]
 
 ## 📋 Features
 - **Smart Recommendations**: Get movie suggestions based on genre preferences
@@ -105,7 +103,14 @@ Use "Show History" to see previous searches
 
 
 
-Screenshots
+## 📸 Screenshots
+
+### Home Page
+<img width="1920" height="1080" alt="Screenshot (14)" src="https://github.com/user-attachments/assets/dab8122f-3f5c-4751-a350-fbfbe1b1011e" />
+### Search Results
+<img width="1920" height="1080" alt="Screenshot (15)" src="https://github.com/user-attachments/assets/6a796933-c968-4e67-a6d8-bc00e9f407b9" />
+### History View
+<img width="1920" height="1080" alt="Screenshot (16)" src="https://github.com/user-attachments/assets/c3622d58-1693-4531-8c71-9366e770e511" />
 
 
  Example Searches
