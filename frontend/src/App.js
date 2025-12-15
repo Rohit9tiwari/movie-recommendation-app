@@ -35,7 +35,7 @@ function App() {
       
     } catch (error) {
       console.error('Error:', error);
-      setError('Failed to get recommendations. Make sure backend is running on port 10000.');
+      setError(`Failed to get recommendations. Error: ${error.message || 'Check console for details'}`);
       
       // Fallback data
       const fallbackMovies = [
