@@ -13,55 +13,67 @@ function App() {
   const API_URL = 'https://movie-recommendation-backend-5mbn.onrender.com';
   
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) {
-      setError('Please enter a movie preference');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    
-    try {
-      const response = await axios.post(`${API_URL}recommend`, {
-        user_input: input
-      });
-      
-      setRecommendations(response.data.recommendations);
-      setShowHistory(false);
-      
-      // Refresh history
-      fetchHistory();
-      
-    } catch (error) {
-  console.error('Full error details:', error);
-  console.error('Error response:', error.response);
-  console.error('Error message:', error.message);
-  
-  // Show actual error to user
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    setError(`Server error: ${error.response.status} - ${error.response.data?.message || 'Unknown error'}`);
-  } else if (error.request) {
-    // The request was made but no response was received
-    setError('No response from server. Check if backend is running.');
-  } else {
-    // Something happened in setting up the request
-    setError(`Request error: ${error.message}`);
+  e.preventDefault();
+  if (!input.trim()) {
+    setError('Please enter a movie preference');
+    return;
   }
+
+  setLoading(true);
+  setError('');
   
-  // Fallback data
-  const fallbackMovies = [
-    { title: "Inception", genre: "Sci-Fi", description: "A mind-bending thriller about dream-sharing technology.", year: 2010 },
-    { title: "The Dark Knight", genre: "Action", description: "Batman faces the Joker in this epic superhero film.", year: 2008 },
-    { title: "Parasite", genre: "Thriller", description: "A poor family schemes to become employed by a wealthy family.", year: 2019 }
-  ];
-  setRecommendations(fallbackMovies);
-    } finally {
-      setLoading(false);
+  try {
+    console.log('Sending request to:', `${API_URL}/recommend`);
+    
+   
+    const response = await axios.post(
+      `${API_URL}/recommend`,  
+      {
+        user_input: input
+      },
+      {
+        timeout: 45000, 
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
+    
+    console.log('Response received:', response.data);
+    setRecommendations(response.data.recommendations);
+    setShowHistory(false);
+    
+ 
+    fetchHistory();
+    
+  } catch (error) {
+    console.error('Full error object:', error);
+    
+    if (error.code === 'ECONNABORTED') {
+      setError('Backend is waking up (takes up to 60s on free tier). Please wait and try again.');
+    } else if (error.response) {
+      
+      setError(`Server error: ${error.response.status} - ${error.response.data?.message || 'Unknown error'}`);
+    } else if (error.request) {
+      
+      setError('No response from server. The backend might be asleep or the URL is wrong.');
+    } else {
+     
+      setError(`Request error: ${error.message}`);
     }
-  };
+    
+    
+    const fallbackMovies = [
+      { title: "Inception", genre: "Sci-Fi", description: "A mind-bending thriller about dream-sharing technology.", year: 2010 },
+      { title: "The Dark Knight", genre: "Action", description: "Batman faces the Joker in this epic superhero film.", year: 2008 },
+      { title: "Parasite", genre: "Thriller", description: "A poor family schemes to become employed by a wealthy family.", year: 2019 }
+    ];
+    setRecommendations(fallbackMovies);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchHistory = async () => {
     try {
