@@ -77,7 +77,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const response = await axios.get(`${API_URL}history`);
+      const response = await axios.get(`${API_URL}/history`);
       setHistory(response.data);
     } catch (error) {
       console.error('Error fetching history:', error);
