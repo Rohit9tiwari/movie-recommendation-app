@@ -23,7 +23,7 @@ function App() {
   setError('');
   
   try {
-    console.log('Sending request to:', `${API_URL}/recommend`);
+    console.log('Sending request to:', `${API_URL}recommend`);
     
    
     const response = await axios.post(
@@ -77,7 +77,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const response = await axios.get(`${API_URL}/history`);
+      const response = await axios.get(`${API_URL}history`);
       setHistory(response.data);
     } catch (error) {
       console.error('Error fetching history:', error);
