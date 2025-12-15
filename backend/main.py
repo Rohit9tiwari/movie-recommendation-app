@@ -10,13 +10,22 @@ import os
 app = FastAPI(title="Movie Recommendation API")
 
 # Enable CORS for all origins (for development)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=[
+#         "http://localhost:3000",
+#         "https://https://movie-recommendation-app-ytbxx.vercel.app/",  # Your Vercel URL
+#         "https://*.vercel.app"  # Allow all Vercel subdomains
+#     ],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# Allow all origins for testing
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://https://movie-recommendation-app-ytbxx.vercel.app/",  # Your Vercel URL
-        "https://*.vercel.app"  # Allow all Vercel subdomains
-    ],
+    allow_origins=["*"],  # Change to specific URLs for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
