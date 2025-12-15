@@ -153,7 +153,7 @@ class RecommendationResponse(BaseModel):
 def read_root():
     return {"message": "Movie Recommendation API is running!"}
 
-@app.post("/recommend")
+@app.post("recommend")
 def get_recommendations(request: RecommendationRequest):
     """Get movie recommendations based on user input"""
     try:
@@ -163,12 +163,12 @@ def get_recommendations(request: RecommendationRequest):
     except Exception as e:
         return {"error": str(e), "recommendations": []}
 
-@app.get("/history")
+@app.get("history")
 def get_history():
     """Get all previous recommendations"""
     return db.get_history()
 
-@app.get("/health")
+@app.get("health")
 def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
