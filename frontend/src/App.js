@@ -23,7 +23,7 @@ function App() {
   setError('');
   
   try {
-    console.log('Sending request to:', `${API_URL}recommend`);
+    console.log('Sending request to:', `${API_URL}/recommend`);
     
    
     const response = await axios.post(
