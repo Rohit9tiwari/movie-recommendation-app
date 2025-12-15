@@ -9,10 +9,8 @@ function App() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [error, setError] = useState('');
-
- const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-backend-url.vercel.app'  // You'll need to deploy backend first
-  : 'http://localhost:8000';
+  
+  const API_URL = 'http://localhost:8000';
   
   const handleSubmit = async (e) => {
     e.preventDefault();
