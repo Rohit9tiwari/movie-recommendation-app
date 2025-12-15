@@ -34,16 +34,30 @@ function App() {
       fetchHistory();
       
     } catch (error) {
-      console.error('Error:', error);
-      setError(`Failed to get recommendations. Error: ${error.message || 'Check console for details'}`);
-      
-      // Fallback data
-      const fallbackMovies = [
-        { title: "Inception", genre: "Sci-Fi", description: "A mind-bending thriller about dream-sharing technology.", year: 2010 },
-        { title: "The Dark Knight", genre: "Action", description: "Batman faces the Joker in this epic superhero film.", year: 2008 },
-        { title: "Parasite", genre: "Thriller", description: "A poor family schemes to become employed by a wealthy family.", year: 2019 }
-      ];
-      setRecommendations(fallbackMovies);
+  console.error('Full error details:', error);
+  console.error('Error response:', error.response);
+  console.error('Error message:', error.message);
+  
+  // Show actual error to user
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    setError(`Server error: ${error.response.status} - ${error.response.data?.message || 'Unknown error'}`);
+  } else if (error.request) {
+    // The request was made but no response was received
+    setError('No response from server. Check if backend is running.');
+  } else {
+    // Something happened in setting up the request
+    setError(`Request error: ${error.message}`);
+  }
+  
+  // Fallback data
+  const fallbackMovies = [
+    { title: "Inception", genre: "Sci-Fi", description: "A mind-bending thriller about dream-sharing technology.", year: 2010 },
+    { title: "The Dark Knight", genre: "Action", description: "Batman faces the Joker in this epic superhero film.", year: 2008 },
+    { title: "Parasite", genre: "Thriller", description: "A poor family schemes to become employed by a wealthy family.", year: 2019 }
+  ];
+  setRecommendations(fallbackMovies);
     } finally {
       setLoading(false);
     }
