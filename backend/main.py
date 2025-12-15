@@ -1,17 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict
 import sqlite3
 import json
 from datetime import datetime
 import os
 
 app = FastAPI(title="Movie Recommendation API")
-# Allow all origins for testing
+
+# CORS - Allow all for testing
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to specific URLs for production
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,23 +21,30 @@ app.add_middleware(
 # Simple database class
 class MovieDatabase:
     def __init__(self):
-        self.db_path = "movie_recommendations.db"
+        # Use /tmp directory on Render for write permissions
+        self.db_path = os.path.join("/tmp", "movie_recommendations.db")
         self.init_database()
         self.init_movies()
     
     def init_database(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS recommendations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_input TEXT NOT NULL,
-                recommended_movies TEXT NOT NULL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        conn.commit()
-        conn.close()
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS recommendations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_input TEXT NOT NULL,
+                    recommended_movies TEXT NOT NULL,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            conn.commit()
+            conn.close()
+            print(f"Database initialized at: {self.db_path}")
+        except Exception as e:
+            print(f"Database initialization error: {e}")
+            # Fallback to in-memory database
+            self.db_path = ":memory:"
     
     def init_movies(self):
         # Predefined movie database
@@ -89,31 +97,40 @@ class MovieDatabase:
         return recommendations
     
     def save_recommendation(self, user_input: str, recommendations: List[Dict]):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO recommendations (user_input, recommended_movies) VALUES (?, ?)',
-            (user_input, json.dumps(recommendations))
-        )
-        conn.commit()
-        conn.close()
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute(
+                'INSERT INTO recommendations (user_input, recommended_movies) VALUES (?, ?)',
+                (user_input, json.dumps(recommendations))
+            )
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print(f"Error saving recommendation: {e}")
     
     def get_history(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM recommendations ORDER BY timestamp DESC')
-        rows = cursor.fetchall()
-        conn.close()
-        
-        result = []
-        for row in rows:
-            result.append({
-                'id': row[0],
-                'user_input': row[1],
-                'recommended_movies': json.loads(row[2]),
-                'timestamp': row[3]
-            })
-        return result
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM recommendations ORDER BY timestamp DESC')
+            rows = cursor.fetchall()
+            conn.close()
+            
+            result = []
+            for row in rows:
+                try:
+                    result.append({
+                        'id': row[0],
+                        'user_input': row[1],
+                        'recommended_movies': json.loads(row[2]),
+                        'timestamp': row[3]
+                    })
+                except:
+                    continue
+            return result
+        except:
+            return []
 
 # Initialize database
 db = MovieDatabase()
@@ -136,12 +153,15 @@ class RecommendationResponse(BaseModel):
 def read_root():
     return {"message": "Movie Recommendation API is running!"}
 
-@app.post("/recommend", response_model=RecommendationResponse)
+@app.post("/recommend")
 def get_recommendations(request: RecommendationRequest):
     """Get movie recommendations based on user input"""
-    recommendations = db.get_recommendations(request.user_input)
-    db.save_recommendation(request.user_input, recommendations)
-    return RecommendationResponse(recommendations=recommendations)
+    try:
+        recommendations = db.get_recommendations(request.user_input)
+        db.save_recommendation(request.user_input, recommendations)
+        return {"recommendations": recommendations}
+    except Exception as e:
+        return {"error": str(e), "recommendations": []}
 
 @app.get("/history")
 def get_history():
@@ -152,14 +172,19 @@ def get_history():
 def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+# Handle preflight requests
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return {"status": "ok"}
+
+@app.options("/recommend")
+async def preflight_recommend():
+    return {"status": "ok"}
+
 if __name__ == "__main__":
     import uvicorn
     import os
-    # Render free tier uses port 10000
+    # Render uses port from environment variable
     port = int(os.environ.get("PORT", 10000))
+    print(f"Starting server on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
-
-# if __name__ == "__main__":
-#     port = int(os.environ.get("PORT", 8000))
-#     uvicorn.run(app, host="0.0.0.0", port=port)
-
