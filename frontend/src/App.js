@@ -10,7 +10,7 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [error, setError] = useState('');
   
-  const API_URL = process.env.REACT_APP_API_URL || 'https://movie-recommendation-backend-5mbn.onrender.com';
+  const API_URL = 'https://movie-recommendation-backend-5mbn.onrender.com';
   
   const handleSubmit = async (e) => {
     e.preventDefault();
