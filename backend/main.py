@@ -8,30 +8,14 @@ from datetime import datetime
 import os
 
 app = FastAPI(title="Movie Recommendation API")
-# Get allowed origins from environment or use defaults
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
-if not allowed_origins or allowed_origins == [""]:
-    allowed_origins = [
-        "http://localhost:3000",
-        "https://movie-recommendation-app.vercel.app"
-    ]
-
+# Allow all origins for testing
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # Change to specific URLs for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Allow all origins for testing
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Change to specific URLs for production
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 
 # Simple database class
 class MovieDatabase:
