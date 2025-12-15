@@ -75,15 +75,16 @@ function App() {
   }
 };
   const fetchHistory = async () => {
-    try {
-      // ✅ CORRECT: Already has leading slash
-      const response = await axios.get(`${API_URL}/history`);
-      setHistory(response.data);
-    } catch (error) {
-      console.error('Error fetching history:', error);
-    }
-  };
-
+  try {
+    const response = await axios.get(`${API_URL}/history`, {
+      timeout: 30000
+    });
+    setHistory(response.data);
+  } catch (error) {
+    console.error('Error fetching history:', error);
+    // Don't show error for history - just log it
+  }
+};
   const toggleHistory = () => {
     if (!showHistory) {
       fetchHistory();
