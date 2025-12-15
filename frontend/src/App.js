@@ -35,7 +35,7 @@ function App() {
       
     } catch (error) {
       console.error('Error:', error);
-      setError('Failed to get recommendations. Make sure backend is running on port 8000.');
+      setError('Failed to get recommendations. Make sure backend is running on port 10000.');
       
       // Fallback data
       const fallbackMovies = [
@@ -51,7 +51,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const response = await axios.get(`${API_URL}/history`);
+      const response = await axios.get(`${API_URL}history`);
       setHistory(response.data);
     } catch (error) {
       console.error('Error fetching history:', error);
