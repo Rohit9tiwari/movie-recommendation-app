@@ -165,7 +165,7 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>Movie Recommendation App | Backend: http://localhost:8000</p>
+        <p>Movie Recommendation App | Backend:https://movie-recommendation-backend-5mbn.onrender.com</p>
       </footer>
     </div>
   );
