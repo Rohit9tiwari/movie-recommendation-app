@@ -23,7 +23,7 @@ function App() {
     setError('');
     
     try {
-      const response = await axios.post(`${API_URL}/recommend`, {
+      const response = await axios.post(`${API_URL}recommend`, {
         user_input: input
       });
       
